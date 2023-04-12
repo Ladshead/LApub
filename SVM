@@ -1,0 +1,75 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
+from pathlib import Path
+import csv
+import time
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.model_selection import GridSearchCV
+import seaborn as sns
+
+path = str(Path.home() / "Downloads")
+os.chdir(path)
+data = pd.read_csv('data_21002225.csv', sep= ';')
+
+print(data.info())  # Descriptive info about the DataFrame
+print(data.shape)  # gives a tuple with the shape of DataFrame
+print(data.head(10)) # print top 10
+
+'''sns.set_style("whitegrid")
+sns.scatterplot(data=data, x='time', y='value', hue='unit', size='sn', sizes=(50, 200), alpha=0.8)
+plt.savefig('scatterplot.png')'''
+
+data['time'] = data['time'].apply(lambda x: str(x).replace("/",""))
+data['time'] = data['time'].apply(lambda x: str(x).replace(":",""))
+data['time'] = data['time'].apply(lambda x: str(x).replace(" ",""))
+
+x = data.iloc[:, [0,1]].values
+y = data.iloc[:, 3].values
+
+sc = StandardScaler()
+x = sc.fit_transform(x)
+print("X = ",x)
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.25, random_state = 0)
+
+# Define the grid of hyperparameters to search over
+param_grid = {
+    'C': [0.1, 1, 10],
+    'kernel': ['linear', 'rbf', 'poly'],
+}
+
+# Create the SVM classifier
+svm = SVC(random_state=0)
+
+# Create the grid search object with all CPU cores
+grid_search = GridSearchCV(svm, param_grid, cv=5, n_jobs=-1)
+
+# Fit the grid search object to the data
+grid_search.fit(X_train, y_train)
+
+# Print the best parameters found by the grid search
+print("Best parameters: ", grid_search.best_params_)
+
+# Use the best model to make predictions on the test data
+y_pred = grid_search.predict(X_test)
+
+# Calculate the accuracy of the model
+print('Accuracy:', accuracy_score(y_test,y_pred)*100)
+
+# Calculate the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Calculate precision, recall, and F1 score
+precision = precision_score(y_test, y_pred, pos_label=-1)
+recall = recall_score(y_test, y_pred, pos_label=-1)
+f1 = f1_score(y_test, y_pred, pos_label=-1)
+
+print("Confusion matrix:\n", cm)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 score:", f1)
