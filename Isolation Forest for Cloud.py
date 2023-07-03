@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.ensemble import IsolationForest
 import seaborn as sns
 
-# Simulated sensor data
+# Simulated sensor data this should be replaced by the data from the ports on the board
 x_values = [1, 2, 3, 4, 5]  # Replace with your sensor data for X-axis
 y_values = [2, 4, 6, 8, 10]  # Replace with your sensor data for Y-axis
 z_values = [5, 10, 15, 20, 25]  # Replace with your sensor data for Z-axis
@@ -39,6 +39,6 @@ print('Anomaly scores:', anomaly_scores)
 # Plot the identified outliers in the scatter plot
 sns.scatterplot(data=df, x='X', y='Y', hue='Outlier', palette=['green', 'red'], size='Z', sizes=(50, 200), alpha=0.1)
 
-# Specify the new save location and filename
-save_path = "C:/SCIMIA/IsolationForest_outliers.png"
+# Specify the new save location and filename, needs access to cloud, file name should be changed to save to cloud
+save_path = "C:/Example.png"
 plt.savefig(save_path)
