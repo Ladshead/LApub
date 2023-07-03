@@ -7,6 +7,7 @@ from sklearn.ensemble import IsolationForest
 import seaborn as sns
 import re
 
+# This has taken the file from my downloads, to be used on the hardware this would need to be edited
 path = str(Path.home() / "Downloads")
 os.chdir(path)
 with open('Magnetometer-Temperature_Serial data.txt', 'r') as file:
@@ -55,5 +56,5 @@ print('Anomaly scores:', anomaly_scores)
 sns.scatterplot(data=df, x='X', y='Y', hue='Outlier', palette=['green', 'red'], size='Z', sizes=(50, 200), alpha=0.1)
 
 # Specify the new save location and filename
-save_path = "C:/SCIMIA/IsolationForest_outliers.png"
+save_path = "C:/IsolationForest_outliers.png"
 plt.savefig(save_path)
